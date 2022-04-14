@@ -34,8 +34,6 @@ define Create/uci-defaults
 	) > $(PKG_BUILD_DIR)/$(1)
 endef
 
-
-
 define Package/luci-app-dns-forwarder
 	SECTION:=luci
 	CATEGORY:=LuCI
@@ -63,7 +61,7 @@ endef
 define Package/luci-app-dns-forwarder/postinst
 #!/bin/sh
 if [ -z "$${IPKG_INSTROOT}" ]; then
-	( . /etc/uci-defaults/luci-dns-forwarder ) && rm -f /etc/uci-defaults/luci-dns-forwarder
+	( . /etc/uci-defaults/luci-app-dns-forwarder ) && rm -f /etc/uci-defaults/luci-app-dns-forwarder
 	chmod 755 /etc/init.d/dns-forwarder >/dev/null 2>&1
 	/etc/init.d/dns-forwarder enable >/dev/null 2>&1
 fi
@@ -80,6 +78,7 @@ endef
 define Package/luci-app-dns-forwarder/install
   $(call Create/uci-defaults,luci-app-dns-forwarder)
 	$(INSTALL_DIR) $(1)/usr/lib/lua/luci/controller
+	$(INSTALL_DATA) ./files/luci/controller/dns-forwarder.lua $(1)/usr/lib/lua/luci/controller/
 	$(INSTALL_DIR) $(1)/usr/lib/lua/luci/i18n
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/dns-forwarder.*.lmo $(1)/usr/lib/lua/luci/i18n/
 	$(INSTALL_DIR) $(1)/usr/lib/lua/luci/model/cbi
